@@ -1,0 +1,29 @@
+---
+title: "exercise-3"
+author: "홍 길 동"
+date: '2021 4 21 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 단축키
+- Chunk 생성: Ctrl + Alt + I
+- Knit Document: Ctrl + Shift + K
+
+### 연습문제 3-1
+문제를 해결하시오.
+```{r}
+a <- 2
+b <- 3
+a + b
+```
+
+### 연습문제 3-2
+그림을 그리시오.
+```{r women}
+plot(women)
+```
+
