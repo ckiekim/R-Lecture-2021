@@ -46,3 +46,24 @@ patients
 patients1 <- data.frame(name, age, gender)
 patients2 <- data.frame(name, blood_type)
 merge(patients1, patients2, by='name')
+
+# 데이터프레임에 행 추가
+length(patients1$name)
+patients1[length(patients1$name)+1,] <- c('몽룡',19,'M')
+patients1
+patients2[length(patients2$name)+1,] <- c('영희','A')
+patients2
+
+# 열 추가
+patients1['birth_year'] <- c(1500,1550,1600,1800)
+patients1
+
+# merge
+# Inner join
+merge(patients1, patients2)      # x, y
+# Left outer join
+merge(patients1, patients2, all.x=T)
+# Right outer join
+merge(patients1, patients2, all.y=T)
+# (Full) outer join
+merge(patients1, patients2, all.x=T, all.y=T)
