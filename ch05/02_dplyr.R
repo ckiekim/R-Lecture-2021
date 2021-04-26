@@ -43,6 +43,20 @@ summarise(group_by(asia_pop, country), life_avg=mean(lifeExp)) %>%
     arrange(desc(life_avg)) %>%
     head(5)
 
+gapminder %>%
+    filter(continent=='Asia') %>%
+    group_by(country) %>%
+    summarise(life_avg=mean(lifeExp)) %>%
+    arrange(desc(life_avg)) %>%
+    head(5)
+# 2007 인구수가 5000만 이상인 국가중 기대수명 Top 5 국가
+gapminder %>%
+    filter(year==2007 & pop>=5e7) %>%
+    group_by(country) %>%
+    summarise(life_avg=mean(lifeExp)) %>%
+    arrange(desc(life_avg)) %>%
+    head(5)
+
 # 5. mutate - 새로운 변수 추가
 # mpg(mile-per-gallon)
 library(ggplot2)
