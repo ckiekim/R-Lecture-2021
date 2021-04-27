@@ -74,3 +74,47 @@ ggplot(gapminder, aes(x=gdpPercap,y=lifeExp,
     geom_point(alpha=0.5) +
     scale_x_log10() +
     facet_wrap(~year)
+
+# 시각화 기본기능
+# 1. 비교/순위
+gapminder %>% 
+    filter(continent=='Asia'&year==1952) %>% 
+    ggplot(aes(reorder(country,pop),pop)) +
+    geom_bar(stat='identity') +
+    coord_flip()
+
+# 2. 비교/순위 - 로그 스케일
+gapminder %>% 
+    filter(continent=='Asia'&year==1952) %>% 
+    ggplot(aes(reorder(country,pop),pop)) +
+    geom_bar(stat='identity') +
+    scale_y_log10() +
+    coord_flip()
+
+# 3. 변화 추세
+gapminder %>% 
+    filter(country=='Korea, Rep.') %>% 
+    ggplot(aes(year, lifeExp, col=country)) +
+    geom_point() +
+    geom_line()
+
+# 4. 여러 데이터의 변화 추세
+ggplot(gapminder, aes(x=year, y=lifeExp, col=continent)) +
+    geom_point(alpha=0.2) +
+    geom_smooth()
+    
+# 5. 분포 - 히스토그램
+x <- filter(gapminder, year==1952)
+hist(x$lifeExp, main='Histogram of lifeExp in 1952')
+
+x %>% 
+    ggplot(aes(lifeExp)) +
+    geom_histogram()
+
+# 6. 대륙별 세분화된 분포 특성 - boxplot
+x %>% 
+    ggplot(aes(continent, lifeExp)) +
+    geom_boxplot()
+
+# 7. 상관 관계
+plot(log10(gapminder$gdpPercap), gapminder$lifeExp)
