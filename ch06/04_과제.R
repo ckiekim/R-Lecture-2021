@@ -74,24 +74,33 @@ grid.arrange(seto_s,seto_p,vers_s,vers_p,
              virg_s,virg_p,ncol=2)
 
 # 3-2
+# barplot + legend
 seto_mean <- apply(iris[iris$Species=='setosa',1:4],2,mean)
 vers_mean <- apply(iris[iris$Species=='versicolor',1:4],2,mean)
 virg_mean <- apply(iris[iris$Species=='virginica',1:4],2,mean)
 mean_of_iris <- rbind(seto_mean, vers_mean, virg_mean)
 
-df <- iris %>% 
-    group_by(Species) %>% 
-    summarise(sepal_length=mean(Sepal.Length), sepal_width=mean(Sepal.Width),
-              petal_length=mean(Petal.Length), petal_width=mean(Petal.Width))
-df
-
-barplot(as.matrix(df[,2:5]), beside=T,
+barplot(mean_of_iris, beside=T,
         main='품종별 평균', ylim=c(0,8), col=c('red','green','blue'))
 legend('topright',
        legend=c('Setosa','Versicolor','Virginica'),
        fill=c('red','green','blue'))
 
+# ggplot
+df <- iris %>% 
+    group_by(Species) %>% 
+    summarise(sepal_length=mean(Sepal.Length), sepal_width=mean(Sepal.Width),
+              petal_length=mean(Petal.Length), petal_width=mean(Petal.Width))
+df_tidy <- gather(df, key='Feature', value='Value', -Species)
+df_tidy
+ggplot(df_tidy, aes(x=Feature, y=Value, fill=Species)) +
+    geom_bar(stat='identity')
+
+ggplot(df_tidy, aes(x=Feature, y=Value, fill=Species)) +
+    geom_bar(stat='identity', position='dodge')
+
 # 3-3
+# boxplot
 par(mfrow=c(3,1))
 boxplot(seto$Sepal.Length, seto$Sepal.Width,
         seto$Petal.Length, seto$Petal.Width,
@@ -109,3 +118,24 @@ boxplot(virg$Sepal.Length, virg$Sepal.Width,
         names=c('Sepal.Length','Sepal.Width','Petal.Length','Petal.Width'),
         main='Virginica')
 par(mfrow=c(1,1))
+
+# ggplot
+seto_tidy <- gather(seto, key='Feature', value='Value', -Species)
+head(seto_tidy)
+s1 <- seto_tidy %>% 
+    ggplot(aes(x=Feature,y=Value)) +
+    geom_boxplot() +
+    ggtitle('Setosa')
+s1
+
+vers_tidy <- gather(vers, key='Feature', value='Value', -Species)
+virg_tidy <- gather(virg, key='Feature', value='Value', -Species)
+s2 <- vers_tidy %>% 
+    ggplot(aes(x=Feature,y=Value)) +
+    geom_boxplot() +
+    ggtitle('Versicolor')
+s3 <- virg_tidy %>% 
+    ggplot(aes(x=Feature,y=Value)) +
+    geom_boxplot() +
+    ggtitle('Virginica')
+grid.arrange(s1,s2,s3, ncol=1)
