@@ -3,19 +3,21 @@
 data <- read.table("http://www.amstat.org/publications/jse/datasets/babyboom.dat.txt", header=F)
 str(data)
 names(data) <- c("time", "gender", "weight", "minutes")
+head(data)
 tmp <- subset(data, gender==1)
 weight <- tmp[[3]]
 
-barx <- mean(weight)
-s <- sd(weight)
+barx <- mean(weight)  # 여자 신생아 몸무게의 평균
+s <- sd(weight)       # 여아 몸무게의 표준편차
 n <- length(weight)
-h0 <- 2800
-t.t <- (barx - h0) / (s / sqrt(n))
+h0 <- 2800            # 모집단의 평균(기존에 여아의 몸무게 평균=2800)
+t.t <- (barx - h0) / (s / sqrt(n))     # 검정 통계량
 
 alpha <- 0.05
-c.u <- qt(1-alpha, df=n-1)
-p.value <- 1 - pt(t.t, df=n-1)
+c.u <- qt(1-alpha, df=n-1)      # 누적 확률이 0.95가 되는 점
+p.value <- 1 - pt(t.t, df=n-1)  # 검정통계량 2.23 보다 클 확률
 
+# R에서 제공하는 t-test
 t.test(weight, mu=2800, alternative="greater")
 
 # 도표 작성 
@@ -53,10 +55,10 @@ legend("topright", legend=legends,
 boy <- subset(data, gender==1)
 girl <- subset(data, gender==2)
 # 정규성 테스트
-shapiro.test(boy$weight)
+shapiro.test(boy$weight)   # p-value < 0.05, 정규성 없음
 qqnorm(boy$weight)
 qqline(boy$weight)
-shapiro.test(girl$weight)
+shapiro.test(girl$weight)  # p-value > 0.05, 정규성 있음
 qqnorm(girl$weight)
 qqline(girl$weight)
 
@@ -91,12 +93,12 @@ text(-2, max(y3)+0.05, "③ 평균 -1, 표준편차 1.5")
 arrows(-2, max(y3)+0.03, -1.5, dnorm(-1.5, mean=-1, sd=1.5), length=0.1)
 
 # 등분산성 테스트
-var.test(data$weight ~ data$gender)
+var.test(data$weight ~ data$gender)   # p > 0.05, 분산이 같다
 var.test(weight ~ gender, data=data)
 
 # 2-sample T test
 t.test(data$weight ~ data$gender, mu=0, alternative="less", 
-       var.equal=TRUE )
+       var.equal=TRUE)
 
 # 3. paired T-test
 # 식욕부진증 치료요법의 효과 검정
