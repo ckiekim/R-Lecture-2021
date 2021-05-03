@@ -32,3 +32,20 @@ table(self100, iris_train$Species)
 
 self001 <- predict(svc001, iris_train, type='class')
 table(self001, iris_train$Species)
+
+
+# K-NN(Nearest Neighbor) - K-최근접 이웃 
+library(class)
+k <- knn(iris_train[, 1:4], iris_test[, 1:4], 
+         iris_train$Species, k=5)
+k
+iris_test$Species
+confusionMatrix(k, iris_test$Species)
+
+# train 함수
+dt <- train(Species~., iris_train, method='rpart')
+rf <- train(Species~., iris_train, method='rf')
+sv <- train(Species~., iris_train, method='svmRadial')
+kn <- train(Species~., iris_train, method='knn')
+
+names(getModelInfo())
