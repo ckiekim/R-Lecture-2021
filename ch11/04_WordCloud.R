@@ -2,6 +2,8 @@
 library(RCurl)
 library(XML)
 library(stringr)
+library(tm)
+library(SnowballC)
 
 html <- readLines('https://en.wikipedia.org/wiki/Data_science')
 html <- htmlParse(html, asText=T)
