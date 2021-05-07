@@ -27,10 +27,6 @@ dtm <- DocumentTermMatrix(doc,
 dim(dtm)
 inspect(dtm)
 
-dtm_tfidf <- DocumentTermMatrix(doc,
-                control=list(weighting=weightTfIdf))
-inspect(dtm_tfidf)
-
 # 모델링이 가능한 형태로 DTM을 변환
 dtm_small <- removeSparseTerms(dtm, 0.9)
 dim(dtm_small)
@@ -68,3 +64,52 @@ dataTest$y <- as.factor(dataTest$y)
 # 학습했던 모델로 예측
 dt_pred <- predict(dt, dataTest, type='class')
 table(dt_pred, dataTest$y)
+
+##################
+# SVM 으로 훈련
+##################
+library(e1071)
+svc <- svm(y ~ ., dataTrain)
+sv_pred <- predict(svc, dataTest, type='class')
+table(sv_pred, dataTest$y)
+
+####################
+# Tf-Idf로 변환
+####################
+dtm_tfidf <- DocumentTermMatrix(doc,
+                control=list(weighting=weightTfIdf))
+inspect(dtm_tfidf)
+
+# 모델링이 가능한 형태로 DTM을 변환
+dtm_small_tfidf <- removeSparseTerms(dtm_tfidf, 0.9)
+dim(dtm_small_tfidf)
+
+# Sentiment(y)와 DTM을 묶어서 데이터프레임을 생성
+X <- as.matrix(dtm_small_tfidf)
+dataTrain <- as.data.frame(cbind(mtrain$sentiment, X))
+head(dataTrain)
+colnames(dataTrain)[1] <- 'y'
+dataTrain$y <- as.factor(dataTrain$y)
+
+# Decision Tree로 학습
+dt_tfidf <- rpart(y ~ ., dataTrain)
+
+# Test dataset
+# dtmTest_tfidf <- DocumentTermMatrix(docTest,
+#                     control=list(dictionary=dtm_small_tfidf$dimnames$Terms,
+#                                  weighting=weightTfIdf))
+dtmTest_tfidf <- DocumentTermMatrix(docTest,
+                    control=list(dictionary=dtm_small_tfidf$dimnames$Terms))
+X <- as.matrix(dtmTest_tfidf)
+dataTest <- as.data.frame(cbind(mtest$sentiment, X))
+colnames(dataTest)[1] <- 'y'
+dataTest$y <- as.factor(dataTest$y)
+
+# 예측
+dt_pred_tfidf <- predict(dt_tfidf, dataTest, type='class')
+table(dt_pred_tfidf, dataTest$y)
+
+# SVM
+# svc_tfidf <- svm(y ~ ., dataTrain)
+# sv_pred_tfidf <- predict(svc_tfidf, dataTest, type='class')
+# table(sv_pred_tfidf, dataTest$y)
