@@ -56,13 +56,27 @@ book_url
 book_html <- read_html(book_url)
 info_list <- html_node(book_html, 'ul.info_list')
 lis <- html_nodes(info_list, 'li')
-page_li <- lis[4]
-page <- html_node(page_li, 'span') %>% html_text()    
-len <- nchar(page) 
-len
-page <- as.integer(substring(page, 1, len-2))
+for (li in lis) {
+    item <- li %>% 
+        html_node('strong') %>% 
+        html_text()
+    if (substring(item, 1, 3) == '페이지') {
+        page <- li %>% 
+            html_node('span') %>% 
+            html_text()
+        len <- str_length(page) 
+        page <- as.integer(substring(page, 1, len-2))
+        break
+    }
+}
 page
 
-
-
+pay_info <- html_node(book_html, '.payment_box.curr')
+ps <- html_nodes(pay_info, 'p')
+price <- ps[2] %>% 
+    html_node('.pbr') %>% 
+    html_node('strong') %>% 
+    html_text()
+price <- as.integer(gsub(',','',price))
+price
 
