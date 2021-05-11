@@ -10,19 +10,17 @@ price_vector <- c()
 
 base_url <- 'https://www.hanbit.co.kr/media/books'
 sub_url <- '/new_book_list.html'
-# query <- sprintf('?page=%d&cate_cd=&srt=&searchKey=&keyWord=', 1)
-# url <- paste0(base_url, sub_url, query)
-# html <- read_html(url)
 for (page in c(1:25)) {
     print(page)
     query <- sprintf('?page=%d&cate_cd=&srt=&searchKey=&keyWord=', page)
     url <- paste0(base_url, sub_url, query)
     html <- read_html(url)
     
-    container <- html_node(html, '#container')  
-    book_list <- html_node(container, '.new_book_list_wrap')  
-    sub_book_list <- html_node(book_list, '.sub_book_list_area')
-    lis <- html_nodes(sub_book_list, 'li')      
+    lis <- html %>% 
+        html_node('#container') %>% 
+        html_node('.new_book_list_wrap') %>% 
+        html_node('.sub_book_list_area') %>% 
+        html_nodes('li') 
     
     for (li in lis) {
         info <- html_node(li, '.info')
@@ -53,8 +51,10 @@ for (page in c(1:25)) {
                 break
             }
         }
+        
         pay_info <- html_node(book_html, '.payment_box.curr')
         ps <- html_nodes(pay_info, 'p')
+        # 12페이지 두개의 책에서 price정보를 얻을 수 없음
         if (length(ps) == 0) {
             price <- 0
         } else {
@@ -64,7 +64,7 @@ for (page in c(1:25)) {
                 html_text()
             price <- as.integer(gsub(',','',price))
         }
-        print(paste(title, price))
+        print(paste(title, price, sep=', '))
         
         title_vector <- c(title_vector, title)
         writer_vector <- c(writer_vector, writer)
@@ -80,3 +80,9 @@ new_books <- data.frame(
     price=price_vector
 )
 View(new_books)
+
+# 파일에 저장하기
+write.csv(new_books, 'data/한빛도서.csv', 
+          fileEncoding='utf-8', row.names=F)
+df <- read.csv('data/한빛도서.csv', fileEncoding='utf-8')
+View(df)
