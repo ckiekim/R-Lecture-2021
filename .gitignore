@@ -1,8 +1,10 @@
 # CKKim Add
+public_api_key.txt
 kakao_api_key.txt
 password.txt
 NHIS/
 movie_review/
+project_data/
 
 # History files
 .Rhistory
