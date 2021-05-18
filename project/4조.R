@@ -14,5 +14,6 @@ leaflet(fest) %>%
     addCircles(lng=~경도, lat=~위도, label=~축제명,
                weight=1, fillColor=~pal(gu), radius=800,
                fillOpacity=0.7) %>% 
-    addLegend(values = ~gu, position = 'bottomright', pal = pal)
-colorFactor(domain=fest$gu, fest$col)
+    addLegend(pal = pal, values = ~gu, position = 'bottomright', 
+              title='자치구')
+
